@@ -21,7 +21,8 @@ wss.on('connection', (wsc, request) => {
     let id = counter++;
     clients[id] = wsc;
     wsc.on('message', (message) => {
-        messages.push(message);
+        console.log(message);
+        messages.push(JSON.parse(message));
         for (let cid in clients) {
             let client = clients[cid];
             client.send(JSON.stringify({

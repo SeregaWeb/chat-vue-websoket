@@ -8,11 +8,8 @@
 </head>
 <body>
     <div id="chat">
-        <div>
-            {{ memory }}
-        </div>
         <ul>
-            <li v-for="message in messages">{{ message }}</li>
+            <li v-for="message in messages">{{ message.message }} - {{message.name}}</li>
         </ul>
         <div>{{ online }}</div>
         <input type="text" v-model="newMessage">
@@ -43,7 +40,11 @@
             },
             methods: {
                 send() {
-                    this.ws.send(this.newMessage , this.name);
+                    var mes = {
+                        message:this.newMessage,
+                        name: this.name
+                    }
+                    this.ws.send(JSON.stringify(mes));
                     this.newMessage = '';
                 },
                 messageHandler(message) {
@@ -55,7 +56,8 @@
                                 this.$set(this, 'messages',  data.messages );
                                 break;
                             case 'message':
-                                this.messages.push( "name:" + this.name + data.message);
+                                
+                            this.messages.push(JSON.parse(data.message));
                                 break;
                             case 'memoryInfo':
                                 this.$set(this, 'memory', data.data)
